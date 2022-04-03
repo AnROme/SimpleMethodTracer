@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SimpleMethodTracer.Logging;
 
 namespace SimpleMethodTracer
 {
@@ -11,12 +8,14 @@ namespace SimpleMethodTracer
     {
         private readonly string _className;
         private readonly string _methodName;
+        private readonly ILogger _logger;
 
-        public MethodTracer()
+        public MethodTracer(ILogger logger)
         {
+            _logger = logger;
             (_className, _methodName) = GetCallerName();
 
-            Console.WriteLine($"{_className}::{_methodName} -- enter");
+            _logger.Info($"[{_className}::{_methodName}] -- enter");
         }
 
         static private (string, string) GetCallerName()
@@ -31,13 +30,13 @@ namespace SimpleMethodTracer
 
         public void Dispose()
         {
-            Console.WriteLine($"{_className}::{_methodName} -- exit");
+            _logger.Info($"[{_className}::{_methodName}] -- exit");
         }
 
-        static public void Log(in string message)
+        static public void Log(in string message, ILogger logger)
         {
             var names = GetCallerName();
-            Console.WriteLine($"{names.Item1}::{names.Item2}: {message}");
+            logger.Info($"[{names.Item1}::{names.Item2}]: {message}");
         }
     }
 }
